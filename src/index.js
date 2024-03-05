@@ -13,8 +13,6 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 
 app.use(express.static(publicDirectoryPath));
 
-let count = 0;
-
 
 // io.on('connection',(socket)=>{
 //     console.log('new Websocket connection')
@@ -26,6 +24,8 @@ let count = 0;
 //     })
 
 // })
+
+
 
 io.on("connection", (socket) => {
     console.log("New Connection here!!!");
@@ -51,7 +51,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('sendLocation', (coords , callback) => {
-        io.emit('message', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`);
+        io.emit('locationMessage', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`);
         callback()
     })
 })
