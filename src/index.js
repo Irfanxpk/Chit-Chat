@@ -11,6 +11,8 @@ const io = socketio(server)
 const port = process.env.PORT || 3000
 const publicDirectoryPath = path.join(__dirname, '../public')
 
+const { genarateMessage, genarateLocationMessage } = require('./utils/message')
+
 app.use(express.static(publicDirectoryPath));
 
 
@@ -30,28 +32,29 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", (socket) => {
     console.log("New Connection here!!!");
 
-    socket.emit('message', "Welcome!!");
+    socket.emit('message', genarateMessage('Welcome!'));
 
-    socket.broadcast.emit('message', "A new user Joined");
+    socket.broadcast.emit('message', genarateMessage("A new user Joined"));
 
     socket.on('sendmsg', (message, callback) => {
 
         const filter = new Filter()
 
-        if(filter.isProfane(message)){
+        if (filter.isProfane(message))
+        {
             return callback('Bad Usage of word are not allowded')
         }
 
-        io.emit('message', message)
+        io.emit('message', genarateMessage(message))
         callback('')
     });
 
     socket.on('disconnect', () => {
-        io.emit('message', 'A User Just left')
+        io.emit('message', genarateMessage('A User Just left'))
     })
 
-    socket.on('sendLocation', (coords , callback) => {
-        io.emit('locationMessage', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`);
+    socket.on('sendLocation', (coords, callback) => {
+        io.emit('locationMessage', genarateLocationMessage(`https://google.com/maps?q=${coords.latitude},${coords.longitude}`));
         callback()
     })
 })
