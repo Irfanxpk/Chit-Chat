@@ -32,9 +32,15 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", (socket) => {
     console.log("New Connection here!!!");
 
-    socket.emit('message', genarateMessage('Welcome!'));
+    socket.on('join',({username , room})=>{
+        socket.join(room)
 
-    socket.broadcast.emit('message', genarateMessage("A new user Joined"));
+        socket.emit('message', genarateMessage('Welcome!'));
+        socket.broadcast.to(room).emit('message', genarateMessage(`${username} has joined!`));
+
+
+    })
+    
 
     socket.on('sendmsg', (message, callback) => {
 
